@@ -1,1 +1,1 @@
-# event-ticketing-system-organizer-frontend
+# event-ticketing-system-event-capture-backend
