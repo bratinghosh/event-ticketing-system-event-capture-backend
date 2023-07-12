@@ -28,8 +28,11 @@ activate your Python virtualenv, and then run the following from your terminal (
 # Install the requirements:
 pip install -r requirements.txt
 
-# Configure the location of your MongoDB database directly or update the .env file:
-export MONGODB_URL="mongodb+srv://<username>:<password>@<url>/<db>?retryWrites=true&w=majority"
+# Configure the location of your MongoDB database in .env file:
+DATABASE_URL=mongodb+srv://<user>:<password>@event-ticketing-system.aw7bjsx.mongodb.net/?retryWrites=true&w=majority
+
+# Configure port in .env file:
+PORT=3001
 
 # Start the service:
 python3 app.py
