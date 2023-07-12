@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Body, HTTPException, status, Request
 from fastapi.responses import Response, JSONResponse
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from pymongo import MongoClient
 # from pymongo.server_api import ServerApi
@@ -16,6 +17,19 @@ from routes.AnalyticsRoutes import router as AnalyticsRouter
 load_dotenv()
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 @app.on_event("startup")
