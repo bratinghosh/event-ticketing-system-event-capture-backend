@@ -9,12 +9,25 @@ from models.AnalyticsModel import AnalyticsModel
 
 router = APIRouter()
 
+@router.get("", response_description="Analytics", response_model=AnalyticsModel)
+async def log_event(request: Request):
+    analytics = {
+        "data": {
+            "totalticketsminted": totalticketsminted(request),
+            "totalticketsmintedtoday": totalticketsmintedtoday(request),
+            "totalticketsmintedbyweekdays": totalticketsmintedbyweekdays(request),
+            "totalticketsmintedbyday": totalticketsmintedbyday(request),
+            "cumulativeticketsmintedbyday": cumulativeticketsmintedbyday(request),
+            "ticketsperuserfrequency": ticketsperuserfrequency(request),
+        }
+    }
+    return JSONResponse(status_code=status.HTTP_200_OK, content=analytics)
+
 ####################################################################################
 # MINT ANALYTICS
 ####################################################################################
 
-@router.get("/mint/totalticketsminted", response_description="Total tickets minted", response_model=AnalyticsModel)
-async def log_event(request: Request):
+def totalticketsminted(request: Request):
     events = request.app.collection.find({"type": "mint"})
     events = [event for event in events]
 
@@ -25,10 +38,9 @@ async def log_event(request: Request):
             "totalticketsminted": totalticketsminted
         }
     }
-    return JSONResponse(status_code=status.HTTP_200_OK, content=analytics)
+    return analytics
 
-@router.get("/mint/totalticketsmintedtoday", response_description="Total tickets minted today", response_model=AnalyticsModel)
-async def log_event(request: Request):
+def totalticketsmintedtoday(request: Request):
     events = request.app.collection.find({"type": "mint"})
     events = [event for event in events]
 
@@ -45,10 +57,9 @@ async def log_event(request: Request):
             "totalticketsmintedtoday": totalticketsmintedtoday
         }
     }
-    return JSONResponse(status_code=status.HTTP_200_OK, content=analytics)
+    return analytics
 
-@router.get("/mint/totalticketsmintedbyweekdays", response_description="Total tickets minted by weekdays", response_model=AnalyticsModel)
-async def log_event(request: Request):
+def totalticketsmintedbyweekdays(request: Request):
     events = request.app.collection.find({"type": "mint"})
     events = [event for event in events]
 
@@ -63,10 +74,9 @@ async def log_event(request: Request):
             "totalticketsmintedbyweekdays": totalticketsmintedbyweekdays
         }
     }
-    return JSONResponse(status_code=status.HTTP_200_OK, content=analytics)
+    return analytics
 
-@router.get("/mint/totalticketsmintedbyday", response_description="Total tickets minted by day", response_model=AnalyticsModel)
-async def log_event(request: Request):
+def totalticketsmintedbyday(request: Request):
     events = request.app.collection.find({"type": "mint"})
     events = [event for event in events]
 
@@ -92,10 +102,9 @@ async def log_event(request: Request):
             "totalticketsmintedbyday": totalmints
         }
     }
-    return JSONResponse(status_code=status.HTTP_200_OK, content=analytics)
+    return analytics
 
-@router.get("/mint/cumulativeticketsmintedbyday", response_description="Cumulative tickets minted by day", response_model=AnalyticsModel)
-async def log_event(request: Request):
+def cumulativeticketsmintedbyday(request: Request):
     events = request.app.collection.find({"type": "mint"})
     events = [event for event in events]
 
@@ -124,13 +133,13 @@ async def log_event(request: Request):
             "cumulativeticketsmintedbyday": cumulativeticketsmintedbyday
         }
     }
-    return JSONResponse(status_code=status.HTTP_200_OK, content=analytics)
+    return analytics
 
 ####################################################################################
 # USER ANALYTICS
 ####################################################################################
-@router.get("/user/ticketsperuserfrequency", response_description="Frequncy of Tickets held per user", response_model=AnalyticsModel)
-async def log_event(request: Request):
+
+def ticketsperuserfrequency(request: Request):
     ticketsperuser = {}
 
     events = request.app.collection.find({"type": "mint"})
@@ -179,7 +188,7 @@ async def log_event(request: Request):
             "frequency": frequency
         }
     }
-    return JSONResponse(status_code=status.HTTP_200_OK, content=analytics)
+    return analytics
 
 ####################################################################################
 # SECONDARY MARKET ANALYTICS
