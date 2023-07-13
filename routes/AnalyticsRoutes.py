@@ -52,7 +52,7 @@ async def log_event(request: Request):
     events = request.app.collection.find({"type": "mint"})
     events = [event for event in events]
 
-    totalticketsmintedbyweekdays = [0, 0, 0, 0, 0, 0]
+    totalticketsmintedbyweekdays = [0, 0, 0, 0, 0, 0, 0]
     for event in events:
         timestamp = datetime.datetime.fromisoformat(event["timestamp"])
         totalticketsmintedbyweekdays[timestamp.weekday()] += 1
