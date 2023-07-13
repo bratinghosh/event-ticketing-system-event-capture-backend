@@ -19,6 +19,7 @@ async def log_event(request: Request):
             "totalticketsmintedbyday": totalticketsmintedbyday(request),
             "cumulativeticketsmintedbyday": cumulativeticketsmintedbyday(request),
             "ticketsperuserfrequency": ticketsperuserfrequency(request),
+            "ticketsonsale": ticketsonsale(request),
         }
     }
     return JSONResponse(status_code=status.HTTP_200_OK, content=analytics)
@@ -136,7 +137,7 @@ def cumulativeticketsmintedbyday(request: Request):
     return analytics
 
 ####################################################################################
-# USER ANALYTICS
+# GENERAL ANALYTICS
 ####################################################################################
 
 def ticketsperuserfrequency(request: Request):
@@ -193,3 +194,35 @@ def ticketsperuserfrequency(request: Request):
 ####################################################################################
 # SECONDARY MARKET ANALYTICS
 ####################################################################################
+def ticketsonsale(request: Request):
+    events = request.app.collection.find({"type": "onsale"})
+    events = [event for event in events]
+
+    tickets = []
+
+    for event in events:
+        ticket_id = event["ticket_id"]
+        tickets.append(ticket_id)
+
+    events = request.app.collection.find({"type": "offsale"})
+    events = [event for event in events]
+
+    for event in events:
+        ticket_id = event["ticket_id"]
+        if ticket_id in tickets:
+            tickets.remove(ticket_id)
+    
+    ticketsonsale = len(tickets)
+    
+    events = request.app.collection.find({"type": "mint"})
+    events = [event for event in events]
+
+    totalticketsminted = len(events)
+
+    analytics = {
+        "data": {
+            "labels": ["On-Sale", "not On-Sale"],
+            "ticketsonsale": [ticketsonsale, (totalticketsminted-ticketsonsale)]
+        }
+    }
+    return analytics
